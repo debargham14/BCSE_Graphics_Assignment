@@ -26,6 +26,16 @@ private slots:
 
     void on_resetButton_clicked();
 
+    void on_setpoint1_clicked();
+
+    void on_setpoint2_clicked();
+
+    void on_DDAline_clicked();
+
+    void drawDDALine (int r, int g, int b);
+
+    void on_bresenhamLine_clicked();
+
 private:
     Ui::MainWindow *ui;
     QPoint p1,p2;

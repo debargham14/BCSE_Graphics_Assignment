@@ -13,6 +13,8 @@
 
 
 using namespace std;
+using namespace std::chrono;
+
 int gridsize=1;
 
 QImage img=QImage(451,451,QImage::Format_RGB888);
@@ -64,6 +66,7 @@ void MainWindow::Mouse_Pressed()
     point(ui->frame->x,ui->frame->y);
 }
 
+//method to display the axes
 void MainWindow::on_show_axes_clicked()
 {
     if(ui->show_axes->isChecked())
@@ -82,6 +85,7 @@ void MainWindow::on_show_axes_clicked()
     }
 }
 
+//method to clear the screen
 void MainWindow::on_resetButton_clicked()
 {
     for(int j=0;j<img.height();j++)
@@ -94,7 +98,7 @@ void MainWindow::on_resetButton_clicked()
     ui->frame->setPixmap(QPixmap::fromImage(img));
 }
 
-
+//method to set the grid
 void MainWindow::on_setgridbutton_clicked()
 {
     gridsize=ui->gridspinbox->value();
@@ -112,8 +116,119 @@ void MainWindow::on_setgridbutton_clicked()
     }
 }
 
+//method to set the first point of the straight line
+void MainWindow::on_setpoint1_clicked()
+{
+    p1.setX(ui->frame->x);
+    p1.setY(ui->frame->y);
+}
+
+//method to set the second point of the straight line
+void MainWindow::on_setpoint2_clicked()
+{
+    p2.setX(ui->frame->x);
+    p2.setY(ui->frame->y);
+}
 
 
 
 
+void MainWindow::on_DDAline_clicked()
+{
+    drawDDALine(255,255,0);
+}
+
+//implementation of the DDA Algorithm
+void MainWindow::drawDDALine (int r, int g, int b){
+       double x0 = p1.x() / gridsize;
+       double xn = p2.x() / gridsize;
+       double y0 = p1.y() / gridsize;
+       double yn = p2.y() / gridsize;
+
+       //required for evaluating the step count in the algorithm
+       double dx = fabs(xn - x0);
+       double dy = fabs(yn - y0);
+
+       double Dx, Dy;
+
+       if (dx > dy ) { //y coordinate will increase backward or forward by the slope value
+           Dx = 1;
+           Dy = dy / dx;
+       }
+
+       else { // x coordinate will increase backward or forward by the inverse slope value
+           Dx = dx / dy;
+           Dy = 1;
+       }
+       //change the direction of movement accordingly
+       if (x0 > xn) Dx *= -1;
+       if (y0 > yn) Dy *= -1;
+
+       double x = x0*gridsize + gridsize / 2; //adjusting the initial x coordinate according to the grid size
+       double y = y0*gridsize + gridsize / 2; //adjusting the initial y coordinate according to the grid size
+
+       auto start = high_resolution_clock::now(); //start the timer
+
+       for (int k =0; k <= (dx > dy ? dx : dy); k++) {
+           point (x, y, r, g, b);
+           x += Dx * gridsize;
+           y += Dy * gridsize;
+       }
+       auto end = high_resolution_clock::now(); //end the timer for final time evaluation
+
+       auto duration = duration_cast<microseconds>(end - start);
+       long executionTime = duration.count();
+       std::cout << "Execution time for DDA Algorithm :- " << executionTime << "\n";
+}
+
+//implementing the Bresenham's Line drawing algorithm
+void MainWindow::on_bresenhamLine_clicked()
+{
+
+    int x0 = p1.x()/gridsize;
+    int y0 = p1.y()/gridsize;
+    int xn = p2.x()/gridsize;
+    int yn = p2.y()/gridsize;
+
+    //required for evaluating the step count of the algorithm
+    int dx = fabs(xn - x0);
+    int dy = fabs(yn - y0);
+
+    int Dx = (x0 > xn ? -1 : 1);
+    int Dy = (y0 > yn ? -1 : 1);
+    bool flag = 1;
+    int x = x0*gridsize + gridsize/2; //adjusting the initial x coordinate according to the grid size
+    int y = y0*gridsize + gridsize/2; //adjusting the initial y coordinate according to the grid size
+    if(dy > dx) { // if slope > 1, then swap the elements
+        swap(dx,dy);
+        swap(x,y);
+        swap(Dx,Dy);
+        flag = 0;
+    }
+
+    //evauating the decision
+    int decision = 2*dy - dx;
+
+    auto start = high_resolution_clock::now();
+    //evaluating the algorithm
+    for(int i=0;i<=dx;i++) {
+        if(flag) {
+            point(x,y,255,255,0);
+        }
+
+        else point(y,x,255,255,0);
+
+        if(decision < 0) {
+            x += Dx*gridsize;
+            decision += 2*dy;
+        } else {
+            x += Dx*gridsize;
+            y += Dy*gridsize;
+            decision += 2*dy - 2*dx;
+        }
+    }
+    auto end = high_resolution_clock::now();
+    long timeOfExecution = duration_cast<microseconds>(end - start).count();
+    cout << "Execution Time for Bresenham's Algorithm :- " << timeOfExecution << "\n";
+}
 
