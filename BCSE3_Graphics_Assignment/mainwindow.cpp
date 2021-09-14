@@ -1,3 +1,4 @@
+//including the necessary header files
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include <QPixmap>
@@ -35,21 +36,26 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
-
 void MainWindow::point(int x,int y, int r=0, int g=255, int b=255)
 {
     if(gridsize == 1) img.setPixel(x,y,qRgb(r,g,b));
     else {
+        //getting the frame heights and widths
+        int frame_width = ui->frame->width();
+        int frame_height = ui->frame->height();
+
         x = (x/gridsize)*gridsize;
         y = (y/gridsize)*gridsize;
-        for(int i=x+1;i <  x + gridsize;i++) {
-            for(int j=y+1;j < y + gridsize;j++) {
-                img.setPixel(i,j,qRgb(r,g,b));
+
+        for(int x_coordinate=x+1;x_coordinate <  x + gridsize;x_coordinate++) {
+            for(int y_coordinate=y+1;y_coordinate < y + gridsize;y_coordinate++) {
+                //condition check to prevent coordinates from going out of bounds
+                if (x_coordinate < frame_width && y_coordinate < frame_height)
+                    img.setPixel(x_coordinate,y_coordinate,qRgb(r,g,b));
             }
         }
     }
     ui->frame->setPixmap(QPixmap::fromImage(img));
-
 }
 
 void MainWindow::showMousePosition(QPoint &pos)
@@ -69,13 +75,16 @@ void MainWindow::Mouse_Pressed()
 //method to display the axes
 void MainWindow::on_show_axes_clicked()
 {
+    int frame_width = ui->frame->width();
+    int frame_height = ui->frame->height();
+
     if(ui->show_axes->isChecked())
     {
-        for(int j=0;j<=ui->frame->width();j+=gridsize)
+        for(int j=0;j<frame_width;j+=gridsize)
         {
             point(img.width()/2,j);
         }
-        for(int i=0;i<=ui->frame->height();i+=gridsize)
+        for(int i=0;i<= frame_height;i+=gridsize)
         {
             point(i,img.height()/2);
         }
@@ -130,9 +139,6 @@ void MainWindow::on_setpoint2_clicked()
     p2.setY(ui->frame->y);
 }
 
-
-
-
 void MainWindow::on_DDAline_clicked()
 {
     drawDDALine(255,255,0);
@@ -140,6 +146,7 @@ void MainWindow::on_DDAline_clicked()
 
 //implementation of the DDA Algorithm
 void MainWindow::drawDDALine (int r, int g, int b){
+       // (x0, y0) -> point1 ; (xn, yn) -> point 2
        double x0 = p1.x() / gridsize;
        double xn = p2.x() / gridsize;
        double y0 = p1.y() / gridsize;
@@ -169,7 +176,7 @@ void MainWindow::drawDDALine (int r, int g, int b){
 
        auto start = high_resolution_clock::now(); //start the timer
 
-       for (int k =0; k <= (dx > dy ? dx : dy); k++) {
+       for (int steps =0; steps <= (dx > dy ? dx : dy); steps++) {
            point (x, y, r, g, b);
            x += Dx * gridsize;
            y += Dy * gridsize;
@@ -184,7 +191,7 @@ void MainWindow::drawDDALine (int r, int g, int b){
 //implementing the Bresenham's Line drawing algorithm
 void MainWindow::on_bresenhamLine_clicked()
 {
-
+    //(x0, y0) -> point1 ; (xn, yn) -> point2
     int x0 = p1.x()/gridsize;
     int y0 = p1.y()/gridsize;
     int xn = p2.x()/gridsize;
@@ -206,12 +213,13 @@ void MainWindow::on_bresenhamLine_clicked()
         flag = 0;
     }
 
-    //evauating the decision
+    //evauating the decision for pixel illumination
     int decision = 2*dy - dx;
 
     auto start = high_resolution_clock::now();
     //evaluating the algorithm
-    for(int i=0;i<=dx;i++) {
+
+    for(int steps=0;steps<=dx;steps++) {
         if(flag) {
             point(x,y,255,255,0);
         }
@@ -231,4 +239,7 @@ void MainWindow::on_bresenhamLine_clicked()
     long timeOfExecution = duration_cast<microseconds>(end - start).count();
     cout << "Execution Time for Bresenham's Algorithm :- " << timeOfExecution << "\n";
 }
+
+
+
 

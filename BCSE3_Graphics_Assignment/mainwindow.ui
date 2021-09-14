@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>810</width>
-    <height>559</height>
+    <width>808</width>
+    <height>522</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -218,7 +218,7 @@ background-color: rgb(85, 255, 255);</string>
    <widget class="QPushButton" name="DDAline">
     <property name="geometry">
      <rect>
-      <x>550</x>
+      <x>540</x>
       <y>330</y>
       <width>89</width>
       <height>25</height>
@@ -231,7 +231,7 @@ background-color: rgb(85, 255, 255);</string>
    <widget class="QPushButton" name="bresenhamLine">
     <property name="geometry">
      <rect>
-      <x>660</x>
+      <x>650</x>
       <y>330</y>
       <width>91</width>
       <height>21</height>
@@ -247,7 +247,7 @@ background-color: rgb(85, 255, 255);</string>
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>810</width>
+     <width>808</width>
      <height>22</height>
     </rect>
    </property>
