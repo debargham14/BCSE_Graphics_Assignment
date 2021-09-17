@@ -36,6 +36,10 @@ private slots:
 
     void on_bresenhamLine_clicked();
 
+    void on_midpointCircle_clicked();
+
+    void on_bresenhamCircle_clicked();
+
 private:
     Ui::MainWindow *ui;
     QPoint p1,p2;
