@@ -8,15 +8,21 @@
 #include <QPainter>
 #include <QPaintDevice>
 #include <QPoint>
-
+#include <QThread>
 #include <cmath>
 #include<bits/stdc++.h>
-
-
+#include <QTimer>
+#include <QDebug>
 using namespace std;
 using namespace std::chrono;
 
 int gridsize=1;
+
+void MainWindow::delay(int n) {
+    QTime dieTime= QTime::currentTime().addSecs(n);
+    while (QTime::currentTime() < dieTime)
+    QCoreApplication::processEvents(QEventLoop::AllEvents, 100);
+}
 
 QImage img=QImage(451,451,QImage::Format_RGB888);
 
@@ -276,6 +282,7 @@ void MainWindow::on_midpointCircle_clicked()
                 p += 2*y + 1 - 2*x;
                 x -= gridsize;
             }
+            delay(1);
     }
     auto end = high_resolution_clock::now();
     long executionTime = duration_cast<microseconds>(end - start).count();
@@ -315,9 +322,76 @@ void MainWindow::on_bresenhamCircle_clicked()
             p += 4*(x-y) + 10;
             y -= gridsize;
         }
+        delay(1);
     }
     auto end = high_resolution_clock::now();
     int executionTime = duration_cast<microseconds>(end - start).count();
     cout << "Execution Time for bresenham's circle drawing algorithm :- " << executionTime << "\n";
+}
+
+//ellipse drawing using midpoint drawing algorithm
+void MainWindow::on_midpointEllipse_clicked()
+{
+        p1.setX(ui->frame->x);
+        p1.setY(ui->frame->y);
+        int x_radius = ui->xaxisRadius->value();
+        int y_radius = ui->yaxisRadius->value();
+        int x_centre=p1.x();
+        int y_centre=p1.y();
+
+
+        x_centre=(x_centre/gridsize)*gridsize+gridsize/2;
+        y_centre=(y_centre/gridsize)*gridsize+gridsize/2;
+
+        int x=0;
+        int y=y_radius;
+        int px=0.0;
+        int py=2 * (x_radius * x_radius)*y;
+        //For first region
+        int p1= (y_radius * y_radius) - (x_radius * x_radius * y_radius) +(0.25)* (x_radius * x_radius); //Initial value of decision paramemter
+
+        while(px<py)
+        {
+            point(x_centre+x*gridsize,y_centre+y*gridsize, 255, 255, 0);
+            point(x_centre-x*gridsize,y_centre+y*gridsize, 255, 255, 0);
+            point(x_centre-x*gridsize,y_centre-y*gridsize, 255, 255, 0);
+            point(x_centre+x*gridsize,y_centre-y*gridsize, 255, 255, 0);
+
+            x++;
+            px+=(2 * y_radius * y_radius);
+            if(p1>=0) {
+                y--;
+                py-=(2 * x_radius * x_radius);
+                p1=p1+(y_radius * y_radius)+px-py;
+
+            }  else{
+                p1=p1+(y_radius * y_radius)+px;
+            }
+            delay(1);
+        }
+
+        //For second region
+        p1=(y_radius * y_radius) *((double)x+0.5)*((double)x+0.5)+(x_radius * x_radius)*(y-1)*(y-1)-(x_radius * x_radius)*(y_radius * y_radius); //Initial value of decision paramemter
+
+
+        while(y>=0)
+        {
+            point(x_centre+x*gridsize,y_centre+y*gridsize, 255, 255, 0);
+            point(x_centre-x*gridsize,y_centre+y*gridsize, 255, 255, 0);
+            point(x_centre-x*gridsize,y_centre-y*gridsize, 255, 255, 0);
+            point(x_centre+x*gridsize,y_centre-y*gridsize, 255, 255, 0);
+
+            y--;
+            py-=(x_radius * x_radius);
+            if(p1<=0){
+                x++;
+                px+=(y_radius * y_radius);
+                p1=p1+(x_radius * x_radius)-py+px;
+
+            }  else  {
+                p1=p1+(x_radius * x_radius)-py;
+            }
+            delay(1);
+        }
 }
 

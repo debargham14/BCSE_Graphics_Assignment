@@ -40,9 +40,13 @@ private slots:
 
     void on_bresenhamCircle_clicked();
 
+    void on_midpointEllipse_clicked();
+
+    void delay(int n);
 private:
     Ui::MainWindow *ui;
     QPoint p1,p2;
+    QTimer *timer;
     void point(int x,int y,int r, int g, int b);
 };
 
