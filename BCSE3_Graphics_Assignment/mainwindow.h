@@ -43,6 +43,10 @@ private slots:
     void on_midpointEllipse_clicked();
 
     void delay(int n);
+    void on_polarCircle_clicked();
+
+    void on_polarEllipse_clicked();
+
 private:
     Ui::MainWindow *ui;
     QPoint p1,p2;

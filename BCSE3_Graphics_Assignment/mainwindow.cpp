@@ -329,6 +329,23 @@ void MainWindow::on_bresenhamCircle_clicked()
     cout << "Execution Time for bresenham's circle drawing algorithm :- " << executionTime << "\n";
 }
 
+//drawing the circle using polar circle drawing algorihtm
+void MainWindow::on_polarCircle_clicked()
+{
+    p1.setX(ui->frame->x);
+    p1.setY(ui->frame->y);
+
+    int x_center = p1.x();
+    int y_center = p1.y();
+
+    int radius = ui->radiusSpinBox->value();
+    for (int theta_degrees = 0; theta_degrees <= 360; theta_degrees++) {
+        double theta_radians = M_PI * theta_degrees / 180;
+        int xk = x_center + radius * cos (theta_radians) * gridsize;
+        int yk = y_center + radius * sin (theta_radians) * gridsize;
+        point (xk, yk, 255, 0, 0);
+    }
+}
 //ellipse drawing using midpoint drawing algorithm
 void MainWindow::on_midpointEllipse_clicked()
 {
@@ -339,7 +356,7 @@ void MainWindow::on_midpointEllipse_clicked()
         int x_centre=p1.x();
         int y_centre=p1.y();
 
-
+        //scaling up the center of the ellipse according to the gridsize
         x_centre=(x_centre/gridsize)*gridsize+gridsize/2;
         y_centre=(y_centre/gridsize)*gridsize+gridsize/2;
 
@@ -367,7 +384,7 @@ void MainWindow::on_midpointEllipse_clicked()
             }  else{
                 p1=p1+(y_radius * y_radius)+px;
             }
-            delay(1);
+            delay(1); //introducing a delay for enabling lazy loading
         }
 
         //For second region
@@ -391,7 +408,37 @@ void MainWindow::on_midpointEllipse_clicked()
             }  else  {
                 p1=p1+(x_radius * x_radius)-py;
             }
-            delay(1);
+            delay(1); //introducing a delay for enabling lazy loading
         }
+}
+
+//implementing algorithm to draw ellipse from polar coordinates
+void MainWindow::on_polarEllipse_clicked()
+{
+    p1.setX(ui->frame->x);
+    p1.setY(ui->frame->y);
+
+    int x_center = p1.x();
+    int y_center = p1.y();
+
+    int a = ui->xaxisRadius->value();
+    int b = ui->yaxisRadius->value();
+
+    float theta1 = 0.0;
+    float theta2 = 90.0;
+
+    while (theta1 < theta2) {
+        int xk = a * cos(theta1) * gridsize;
+        int yk = b * sin (theta1) * gridsize;
+
+        //plotting the polar coordinates
+        point (x_center + xk, y_center + yk, 255, 0, 0);
+        point (x_center - xk, y_center + yk, 255, 0, 0);
+        point (x_center - xk, y_center - yk, 255, 0, 0);
+        point (x_center + xk, y_center - yk, 255, 0, 0);
+
+        theta1++;
+        delay(1);
+    }
 }
 

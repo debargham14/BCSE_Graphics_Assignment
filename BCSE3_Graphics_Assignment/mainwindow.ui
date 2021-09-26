@@ -179,8 +179,8 @@ background-color: rgb(85, 255, 255);</string>
    <widget class="QPushButton" name="resetButton">
     <property name="geometry">
      <rect>
-      <x>590</x>
-      <y>470</y>
+      <x>610</x>
+      <y>500</y>
       <width>231</width>
       <height>25</height>
      </rect>
@@ -221,11 +221,11 @@ background-color: rgb(85, 255, 255);</string>
       <x>540</x>
       <y>330</y>
       <width>89</width>
-      <height>25</height>
+      <height>31</height>
      </rect>
     </property>
     <property name="text">
-     <string>DDA</string>
+     <string> DDA Line</string>
     </property>
    </widget>
    <widget class="QPushButton" name="bresenhamLine">
@@ -233,12 +233,12 @@ background-color: rgb(85, 255, 255);</string>
      <rect>
       <x>650</x>
       <y>330</y>
-      <width>91</width>
-      <height>21</height>
+      <width>121</width>
+      <height>31</height>
      </rect>
     </property>
     <property name="text">
-     <string>Bresenham</string>
+     <string> Bresenham Line</string>
     </property>
    </widget>
    <widget class="QSpinBox" name="radiusSpinBox">
@@ -281,7 +281,7 @@ background-color: rgb(85, 255, 255);</string>
     <property name="geometry">
      <rect>
       <x>540</x>
-      <y>420</y>
+      <y>440</y>
       <width>91</width>
       <height>31</height>
      </rect>
@@ -290,8 +290,8 @@ background-color: rgb(85, 255, 255);</string>
    <widget class="QSpinBox" name="yaxisRadius">
     <property name="geometry">
      <rect>
-      <x>760</x>
-      <y>420</y>
+      <x>740</x>
+      <y>440</y>
       <width>91</width>
       <height>31</height>
      </rect>
@@ -301,7 +301,7 @@ background-color: rgb(85, 255, 255);</string>
     <property name="geometry">
      <rect>
       <x>640</x>
-      <y>430</y>
+      <y>450</y>
       <width>91</width>
       <height>17</height>
      </rect>
@@ -313,8 +313,8 @@ background-color: rgb(85, 255, 255);</string>
    <widget class="QLabel" name="label_2">
     <property name="geometry">
      <rect>
-      <x>860</x>
-      <y>430</y>
+      <x>850</x>
+      <y>450</y>
       <width>91</width>
       <height>17</height>
      </rect>
@@ -326,14 +326,40 @@ background-color: rgb(85, 255, 255);</string>
    <widget class="QPushButton" name="midpointEllipse">
     <property name="geometry">
      <rect>
-      <x>970</x>
-      <y>420</y>
+      <x>950</x>
+      <y>440</y>
       <width>121</width>
       <height>31</height>
      </rect>
     </property>
     <property name="text">
      <string>midpoint ellipse</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="polarCircle">
+    <property name="geometry">
+     <rect>
+      <x>920</x>
+      <y>370</y>
+      <width>121</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>polar circle</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="polarEllipse">
+    <property name="geometry">
+     <rect>
+      <x>1080</x>
+      <y>440</y>
+      <width>121</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>polar ellipse</string>
     </property>
    </widget>
   </widget>
@@ -346,6 +372,12 @@ background-color: rgb(85, 255, 255);</string>
      <height>22</height>
     </rect>
    </property>
+   <widget class="QMenu" name="menuDebargha_s_Graphics_Assignment">
+    <property name="title">
+     <string>Debargha's Graphics Assignment</string>
+    </property>
+   </widget>
+   <addaction name="menuDebargha_s_Graphics_Assignment"/>
   </widget>
   <widget class="QToolBar" name="mainToolBar">
    <attribute name="toolBarArea">
