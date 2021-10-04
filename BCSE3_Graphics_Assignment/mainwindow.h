@@ -47,10 +47,23 @@ private slots:
 
     void on_polarEllipse_clicked();
 
+
+    void on_floodfill_clicked();
+
+    void floodfillUtility4point(int , int, int, int, int);
+    void floodfillUtility8point (int, int, int, int, int);
+
+
+    void boundaryfillUtility4point (int, int, QRgb, int, int, int);
+    void boundaryfillUtility8point (int, int, QRgb, int, int, int);
+
+    void on_boundaryfill_clicked();
+
 private:
     Ui::MainWindow *ui;
     QPoint p1,p2;
     QTimer *timer;
+
     void point(int x,int y,int r, int g, int b);
 };
 

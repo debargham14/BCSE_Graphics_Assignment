@@ -18,6 +18,8 @@ using namespace std::chrono;
 
 int gridsize=1;
 
+std::vector<std::pair<int, int> > vertex_list;
+//delay function to introduce animation while drawing
 void MainWindow::delay(int n) {
     QTime dieTime= QTime::currentTime().addSecs(n);
     while (QTime::currentTime() < dieTime)
@@ -35,6 +37,9 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->y_axis->hide();
     connect(ui->frame,SIGNAL(Mouse_Pos()),this,SLOT(Mouse_Pressed()));
     connect(ui->frame,SIGNAL(sendMousePosition(QPoint&)),this,SLOT(showMousePosition(QPoint&)));
+
+    ui->fill_selector->addItem("8 point fill");
+    ui->fill_selector->addItem ("4 point fill");
 }
 
 MainWindow::~MainWindow()
@@ -339,11 +344,19 @@ void MainWindow::on_polarCircle_clicked()
     int y_center = p1.y();
 
     int radius = ui->radiusSpinBox->value();
-    for (int theta_degrees = 0; theta_degrees <= 360; theta_degrees++) {
+    for (int theta_degrees = 0; theta_degrees <= 45; theta_degrees++) {
         double theta_radians = M_PI * theta_degrees / 180;
-        int xk = x_center + radius * cos (theta_radians) * gridsize;
-        int yk = y_center + radius * sin (theta_radians) * gridsize;
-        point (xk, yk, 255, 0, 0);
+        int xk = radius * cos (theta_radians) * gridsize;
+        int yk = radius * sin (theta_radians) * gridsize;
+        point (x_center + xk, y_center + yk, 255, 0, 0);
+        point (x_center + xk, y_center - yk, 255, 0, 0);
+        point (x_center - xk, y_center + yk, 255, 0, 0);
+        point (x_center - xk, y_center - yk, 255, 0, 0);
+
+        point (x_center + yk, y_center + xk, 255, 0, 0);
+        point (x_center + yk, y_center - xk, 255, 0, 0);
+        point (x_center - yk, y_center + xk, 255, 0, 0);
+        point (x_center - yk, y_center - xk, 255, 0, 0);
     }
 }
 //ellipse drawing using midpoint drawing algorithm
@@ -431,14 +444,101 @@ void MainWindow::on_polarEllipse_clicked()
         int xk = a * cos(theta1) * gridsize;
         int yk = b * sin (theta1) * gridsize;
 
-        //plotting the polar coordinates
+        //plotting the polar coordinates on the grid
         point (x_center + xk, y_center + yk, 255, 0, 0);
         point (x_center - xk, y_center + yk, 255, 0, 0);
         point (x_center - xk, y_center - yk, 255, 0, 0);
         point (x_center + xk, y_center - yk, 255, 0, 0);
 
         theta1++;
-        delay(1);
+        delay(1);//introducing a delay for animation effect
+    }
+}
+
+void MainWindow::floodfillUtility4point (int x, int y, int r, int g, int b) {
+    if(x < 0 || y < 0 || x >= img.width() || y >= img.height()) return;
+        if(img.pixel(x,y) == qRgb(r,g,b)) return;
+        point(x,y,r,g,b);
+        floodfillUtility4point(x - gridsize, y, r,g,b);
+        floodfillUtility4point(x + gridsize, y, r,g,b);
+        floodfillUtility4point(x, y - gridsize, r,g,b);
+        floodfillUtility4point(x, y + gridsize, r,g,b);
+}
+
+void MainWindow::floodfillUtility8point (int x, int y, int r, int g, int b) {
+    if(x < 0 || y < 0 || x >= img.width() || y >= img.height()) return;
+        if(img.pixel(x,y) == qRgb(r,g,b)) return;
+        point(x,y,r,g,b);
+        floodfillUtility8point(x - gridsize, y, r,g,b);
+        floodfillUtility8point(x + gridsize, y, r,g,b);
+        floodfillUtility8point(x, y - gridsize, r,g,b);
+        floodfillUtility8point(x, y + gridsize, r,g,b);
+        floodfillUtility8point(x - gridsize, y + gridsize, r,g,b);
+        floodfillUtility8point(x + gridsize, y - gridsize, r,g,b);
+        floodfillUtility8point(x - gridsize, y - gridsize, r,g,b);
+        floodfillUtility8point(x + gridsize, y + gridsize, r,g,b);
+}
+
+void MainWindow::on_floodfill_clicked()
+{
+        p1.setX(ui->frame->x);
+        p1.setY(ui->frame->y);
+        int x = p1.x()/gridsize;
+        int y = p1.y()/gridsize;
+        x = x*gridsize + gridsize/2;
+        y = y*gridsize + gridsize/2;
+        point(x,y,0,0,0);
+
+        int r = 255, g = 255, b = 0;
+        if (ui->fill_selector->currentText() == "4 point fill"){
+
+           floodfillUtility4point(x,y,r,g,b);
+       }
+       else if (ui->fill_selector->currentText() == "8 point fill") {
+            floodfillUtility8point(x, y, r, g, b);
+       }
+}
+
+void MainWindow::boundaryfillUtility4point (int x, int y, QRgb edgecolor, int r, int g, int b) {
+    if(x < 0 || y < 0 || x >= img.width() || y >= img.height()) return;
+    if(img.pixel(x,y) == edgecolor || img.pixel(x,y) == qRgb(r,g,b)) return;
+    point(x,y,r,g,b);
+    boundaryfillUtility4point(x - gridsize, y, edgecolor,r,g,b);
+    boundaryfillUtility4point(x + gridsize, y, edgecolor,r,g,b);
+    boundaryfillUtility4point(x, y - gridsize, edgecolor,r,g,b);
+    boundaryfillUtility4point(x, y + gridsize, edgecolor,r,g,b);
+}
+
+void MainWindow::boundaryfillUtility8point (int x, int y, QRgb edgecolor, int r, int g, int b) {
+    if(x < 0 || y < 0 || x >= img.width() || y >= img.height()) return;
+    if(img.pixel(x,y) == edgecolor || img.pixel(x,y) == qRgb(r,g,b)) return;
+    point(x,y,r,g,b);
+    boundaryfillUtility8point(x - gridsize, y, edgecolor,r,g,b);
+    boundaryfillUtility8point(x + gridsize, y, edgecolor,r,g,b);
+    boundaryfillUtility8point(x, y - gridsize, edgecolor,r,g,b);
+    boundaryfillUtility8point(x, y + gridsize, edgecolor,r,g,b);
+
+    boundaryfillUtility8point(x - gridsize, y + gridsize, edgecolor,r,g,b);
+    boundaryfillUtility8point(x + gridsize, y - gridsize, edgecolor,r,g,b);
+    boundaryfillUtility8point(x - gridsize, y - gridsize, edgecolor,r,g,b);
+    boundaryfillUtility8point(x + gridsize, y + gridsize, edgecolor,r,g,b);
+}
+
+void MainWindow::on_boundaryfill_clicked()
+{
+    p1.setX(ui->frame->x);
+    p1.setY(ui->frame->y);
+    int x = p1.x()/gridsize;
+    int y = p1.y()/gridsize;
+    x = x*gridsize + gridsize/2;
+    y = y*gridsize + gridsize/2;
+    point(x,y,0,0,0);
+
+    if (ui->fill_selector->currentText() == "4 point fill") {
+        boundaryfillUtility4point(x, y, qRgb (255, 255, 0), 255, 255, 255);
+    }
+    if (ui->fill_selector->currentText() == "8 point fill") {
+        boundaryfillUtility8point(x, y, qRgb(255, 255, 0), 255, 255, 255);
     }
 }
 

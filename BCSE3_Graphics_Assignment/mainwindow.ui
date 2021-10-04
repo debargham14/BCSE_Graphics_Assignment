@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>1274</width>
-    <height>588</height>
+    <height>677</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -179,8 +179,8 @@ background-color: rgb(85, 255, 255);</string>
    <widget class="QPushButton" name="resetButton">
     <property name="geometry">
      <rect>
-      <x>610</x>
-      <y>500</y>
+      <x>590</x>
+      <y>550</y>
       <width>231</width>
       <height>25</height>
      </rect>
@@ -360,6 +360,42 @@ background-color: rgb(85, 255, 255);</string>
     </property>
     <property name="text">
      <string>polar ellipse</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="floodfill">
+    <property name="geometry">
+     <rect>
+      <x>710</x>
+      <y>490</y>
+      <width>121</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>flood fill </string>
+    </property>
+   </widget>
+   <widget class="QComboBox" name="fill_selector">
+    <property name="geometry">
+     <rect>
+      <x>540</x>
+      <y>500</y>
+      <width>151</width>
+      <height>25</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="boundaryfill">
+    <property name="geometry">
+     <rect>
+      <x>850</x>
+      <y>490</y>
+      <width>121</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>boundary fill</string>
     </property>
    </widget>
   </widget>
