@@ -59,6 +59,16 @@ private slots:
 
     void on_boundaryfill_clicked();
 
+    void on_setVertex_clicked();
+
+    void on_clearVertex_clicked();
+
+    void initEdgeTable ();
+
+    void storeEdgeInTable (int, int, int, int);
+
+    void on_scanlinefill_clicked();
+
 private:
     Ui::MainWindow *ui;
     QPoint p1,p2;
