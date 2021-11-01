@@ -69,6 +69,17 @@ private slots:
 
     void on_scanlinefill_clicked();
 
+    void on_translation_clicked();
+
+    void poly_draw (std::vector<std::pair<int, int> >, int, int, int);
+    void on_scaling_clicked();
+
+    void on_shearing_clicked();
+
+    void on_shearing_2_clicked();
+
+    void on_reflection_clicked();
+
 private:
     Ui::MainWindow *ui;
     QPoint p1,p2;

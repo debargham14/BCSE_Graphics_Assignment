@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>1274</width>
-    <height>728</height>
+    <height>891</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -179,8 +179,8 @@ background-color: rgb(85, 255, 255);</string>
    <widget class="QPushButton" name="resetButton">
     <property name="geometry">
      <rect>
-      <x>620</x>
-      <y>630</y>
+      <x>580</x>
+      <y>820</y>
       <width>231</width>
       <height>25</height>
      </rect>
@@ -435,6 +435,284 @@ background-color: rgb(85, 255, 255);</string>
     </property>
     <property name="text">
      <string>scan line</string>
+    </property>
+   </widget>
+   <widget class="QSpinBox" name="xtranslate">
+    <property name="geometry">
+     <rect>
+      <x>540</x>
+      <y>610</y>
+      <width>71</width>
+      <height>31</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_4">
+    <property name="geometry">
+     <rect>
+      <x>630</x>
+      <y>620</y>
+      <width>91</width>
+      <height>17</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>x translate</string>
+    </property>
+   </widget>
+   <widget class="QSpinBox" name="ytranslate">
+    <property name="geometry">
+     <rect>
+      <x>740</x>
+      <y>610</y>
+      <width>71</width>
+      <height>31</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_7">
+    <property name="geometry">
+     <rect>
+      <x>830</x>
+      <y>620</y>
+      <width>91</width>
+      <height>17</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>y translate</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="translation">
+    <property name="geometry">
+     <rect>
+      <x>920</x>
+      <y>610</y>
+      <width>121</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Translate</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_8">
+    <property name="geometry">
+     <rect>
+      <x>630</x>
+      <y>660</y>
+      <width>91</width>
+      <height>17</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>x scale</string>
+    </property>
+   </widget>
+   <widget class="QSpinBox" name="yscale">
+    <property name="geometry">
+     <rect>
+      <x>740</x>
+      <y>650</y>
+      <width>71</width>
+      <height>31</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_9">
+    <property name="geometry">
+     <rect>
+      <x>830</x>
+      <y>660</y>
+      <width>91</width>
+      <height>17</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>y scale</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="scaling">
+    <property name="geometry">
+     <rect>
+      <x>920</x>
+      <y>650</y>
+      <width>121</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>scale</string>
+    </property>
+   </widget>
+   <widget class="QSpinBox" name="xshear">
+    <property name="geometry">
+     <rect>
+      <x>540</x>
+      <y>690</y>
+      <width>71</width>
+      <height>31</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_10">
+    <property name="geometry">
+     <rect>
+      <x>630</x>
+      <y>700</y>
+      <width>91</width>
+      <height>17</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>x shear</string>
+    </property>
+   </widget>
+   <widget class="QSpinBox" name="yshear">
+    <property name="geometry">
+     <rect>
+      <x>740</x>
+      <y>690</y>
+      <width>71</width>
+      <height>31</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_11">
+    <property name="geometry">
+     <rect>
+      <x>830</x>
+      <y>700</y>
+      <width>91</width>
+      <height>17</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>y shear</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="shearing">
+    <property name="geometry">
+     <rect>
+      <x>920</x>
+      <y>690</y>
+      <width>121</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>shear</string>
+    </property>
+   </widget>
+   <widget class="QSpinBox" name="anglespinbox">
+    <property name="geometry">
+     <rect>
+      <x>540</x>
+      <y>740</y>
+      <width>71</width>
+      <height>31</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_12">
+    <property name="geometry">
+     <rect>
+      <x>630</x>
+      <y>750</y>
+      <width>121</width>
+      <height>17</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>angle spin value</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="shearing_2">
+    <property name="geometry">
+     <rect>
+      <x>750</x>
+      <y>740</y>
+      <width>121</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>rotation</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="reflection">
+    <property name="geometry">
+     <rect>
+      <x>1110</x>
+      <y>780</y>
+      <width>121</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>reflection</string>
+    </property>
+   </widget>
+   <widget class="QCheckBox" name="reflectionaxis">
+    <property name="geometry">
+     <rect>
+      <x>540</x>
+      <y>790</y>
+      <width>121</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>reflection axis</string>
+    </property>
+   </widget>
+   <widget class="QCheckBox" name="reflectxaxis">
+    <property name="geometry">
+     <rect>
+      <x>680</x>
+      <y>790</y>
+      <width>131</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>reflection x axis</string>
+    </property>
+   </widget>
+   <widget class="QCheckBox" name="reflectyaxis">
+    <property name="geometry">
+     <rect>
+      <x>820</x>
+      <y>790</y>
+      <width>131</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>reflection y axis</string>
+    </property>
+   </widget>
+   <widget class="QCheckBox" name="reflectorigin">
+    <property name="geometry">
+     <rect>
+      <x>960</x>
+      <y>790</y>
+      <width>131</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>reflection origin</string>
+    </property>
+   </widget>
+   <widget class="QSpinBox" name="xscale">
+    <property name="geometry">
+     <rect>
+      <x>540</x>
+      <y>650</y>
+      <width>71</width>
+      <height>31</height>
+     </rect>
     </property>
    </widget>
   </widget>

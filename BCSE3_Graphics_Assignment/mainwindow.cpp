@@ -235,10 +235,10 @@ void MainWindow::on_bresenhamLine_clicked()
 
     for(int steps=0;steps<=dx;steps++) {
         if(flag) {
-            point(x,y,255,255,0);
+            point(x,y,255,0,0);
         }
 
-        else point(y,x,255,255,0);
+        else point(y,x,255,0,0);
 
         if(decision < 0) {
             x += Dx*gridsize;
@@ -248,6 +248,7 @@ void MainWindow::on_bresenhamLine_clicked()
             y += Dy*gridsize;
             decision += 2*dy - 2*dx;
         }
+        //delay(1);
     }
     auto end = high_resolution_clock::now();
     long timeOfExecution = duration_cast<microseconds>(end - start).count();
@@ -712,7 +713,7 @@ void MainWindow::on_scanlinefill_clicked()
         insertionSort(&ActiveEdgeTuple);
 
         j = 0;
-        FillFlag = 0;
+//        FillFlag = 0;
         coordCount = 0;
         x1 = 0;
         x2 = 0;
@@ -772,7 +773,8 @@ void MainWindow::on_scanlinefill_clicked()
             {
                     p1.setX(x1);p1.setY(i);
                     p2.setX(x2);p2.setY(i);
-                    on_DDAline_clicked();
+                    //on_DDAline_clicked();
+                    on_bresenhamLine_clicked();
                     //delay(1);
             }
 
@@ -787,4 +789,229 @@ void MainWindow::on_scanlinefill_clicked()
     initEdgeTable();
 }
 
+void MainWindow::poly_draw(std::vector<std::pair<int,int> > vlist, int r, int g, int b) {
+    for(int i=0;i<(int)vlist.size()-1;i++)
+    {
+        p1.setX(vlist[i].first); p1.setY(vlist[i].second);
+        p2.setX(vlist[i+1].first); p2.setY(vlist[i+1].second);
+        drawDDALine(r,g,b);
+    }
+}
+
+void mat_mult(double a[3][3], int b[3], double res[3]){
+    int i,j;
+    for(i=0;i<3;i++){
+        res[i]=0;
+        for(j=0;j<3;j++)
+            res[i]+=(a[i][j]*b[j]);
+    }
+}
+
+
+void MainWindow::on_translation_clicked()
+{
+    int tx = (ui->xtranslate->text()).toInt();
+    int ty = (ui->ytranslate->text()).toInt();
+    int k = ui->gridspinbox->value();
+
+    vector<pair<int,int>> old_vertex = vertex_list;
+
+    tx*=k;
+    ty*=k;
+    ty=-ty;
+    int i,len=vertex_list.size();
+
+    // matrix for translation
+    double mat[3][3]={{1,0,tx*1.0},{0,1,ty*1.0},{0,0,1}};
+
+    int coord[3];
+    double res[3];
+    for(i=0;i<len;i++)
+    {
+        coord[0]=vertex_list[i].first;
+        coord[1]=vertex_list[i].second;
+        coord[2]=1;
+        mat_mult(mat,coord,res);
+        vertex_list[i].first= res[0]/res[2];
+        vertex_list[i].second= res[1]/res[2];
+    }
+    poly_draw(old_vertex,255,0,0);
+    poly_draw(vertex_list,255,255,0);
+}
+
+
+
+void MainWindow::on_scaling_clicked()
+{
+    double sx = (ui->xscale->text()).toDouble();
+    double sy = (ui->yscale->text()).toDouble();
+    gridsize = ui->gridspinbox->value();
+
+    vector<pair<int,int>> old_vertex;
+    for(int i=0;i<int(vertex_list.size());i++)
+    {
+        old_vertex.push_back(vertex_list[i]);
+    }
+
+    //Point about which to be scaled
+    int piv_x= (ui->frame->x/gridsize)*gridsize+gridsize/2;
+    int piv_y= (ui->frame->y/gridsize)*gridsize+gridsize/2;
+
+    int i,len=vertex_list.size();
+
+    // matrix for scaling
+    double mat[3][3]={{sx,0,0},{0,sy,0},{0,0,1}};
+    int coord[3];
+    double res[3];
+    for(i=0;i<len;i++)
+    {
+        coord[0]=vertex_list[i].first-piv_x;
+        coord[1]=piv_y-vertex_list[i].second;
+        coord[2]=1;
+        mat_mult(mat,coord,res);
+        vertex_list[i].first=res[0]/res[2]+piv_x;
+        vertex_list[i].second=piv_y-res[1]/res[2];
+
+    }
+
+    poly_draw(old_vertex,255,0,0);
+    poly_draw(vertex_list,255,255,0);
+}
+
+
+void MainWindow::on_shearing_clicked()
+{
+    int shx = (ui->xshear->text()).toInt();
+    int shy = (ui->yshear->text()).toInt();
+    gridsize = ui->gridspinbox->value();
+
+    vector<pair<int,int>> old_vertex;
+    for(int i=0;i<int(vertex_list.size());i++)
+    {
+        old_vertex.push_back(vertex_list[i]);
+    }
+
+    //Point about which to be sheared
+    int piv_x=(ui->frame->x/gridsize)*gridsize+gridsize/2;
+    int piv_y=(ui->frame->y/gridsize)*gridsize+gridsize/2;
+
+    int i,len=vertex_list.size();
+
+    // matrix for shearing
+    double mat[3][3]={{1,shx*1.0,0},{shy*1.0,1,0},{0,0,1}};
+    int coord[3];
+    double res[3];
+    for(i=0;i<len;i++)
+    {
+        coord[0]=vertex_list[i].first-piv_x;
+        coord[1]=piv_y-vertex_list[i].second;
+        coord[2]=1;
+        mat_mult(mat,coord,res);
+        vertex_list[i].first=res[0]/res[2]+piv_x;
+        vertex_list[i].second=piv_y-res[1]/res[2];
+    }
+    poly_draw(old_vertex,255,0,0);
+    poly_draw(vertex_list,255,255,0);
+}
+
+
+void MainWindow::on_shearing_2_clicked()
+{
+    double angle = ui->anglespinbox->value();
+    gridsize = ui->gridspinbox->value();
+
+    vector<pair<int,int>> old_vertex;
+    for(int i=0;i<int(vertex_list.size());i++)
+    {
+        old_vertex.push_back(vertex_list[i]);
+    }
+
+    double dang=(double)angle*M_PI/180.0;
+    double sinang=sin(dang);
+    double cosang=cos(dang);
+
+    //Point about which to be rotated
+    int piv_x=(ui->frame->x/gridsize)*gridsize+gridsize/2;
+    int piv_y=(ui->frame->y/gridsize)*gridsize+gridsize/2;
+
+    int i,len=vertex_list.size();
+
+    // matrix for rotation
+    double mat[3][3]={{cosang,-sinang,0},{sinang,cosang,0},{0,0,1}};
+    int coord[3];
+    double res[3];
+    for(i=0;i<len;i++)
+    {
+        coord[0]=vertex_list[i].first-piv_x;
+        coord[1]=piv_y-vertex_list[i].second;
+        coord[2]=1;
+        mat_mult(mat,coord,res);
+        vertex_list[i].first=res[0]/res[2]+piv_x;
+        vertex_list[i].second=piv_y-res[1]/res[2];
+    }
+
+    poly_draw(old_vertex,255,0,0);
+    poly_draw(vertex_list,255,255,0);
+}
+
+
+void MainWindow::on_reflection_clicked()
+{
+    if (ui->reflectionaxis->isChecked() == false) {
+           int rx, ry;
+       if (ui->reflectxaxis->isChecked()) {
+           rx = 1, ry = -1;
+       } else if (ui->reflectyaxis->isChecked()) {
+           rx = -1, ry = 1;
+       } else if (ui->reflectorigin->isChecked()) {
+           rx = -1, ry = -1;
+       } else {
+           return;
+       }
+       vector<pair<int,int>> old_vertex = vertex_list;
+       int k=ui->gridspinbox->value();
+//        rx*=k;
+//        ry*=k;
+       int i,len=vertex_list.size();
+       // matrix for reflection
+       double mat[3][3]={{rx*1.0,0,0},{0,ry*1.0,0},{0,0,1}};
+
+       //Point about which to be reflected
+       int piv_x=((ui->frame->width()/2)/gridsize)*gridsize+gridsize/2;
+       int piv_y=((ui->frame->height()/2)/gridsize)*gridsize+gridsize/2;
+
+       int coord[3];
+       double res[3];
+       for(i=0;i<len;i++)
+       {
+           coord[0]=vertex_list[i].first-piv_x;
+           coord[1]=piv_y-vertex_list[i].second;
+           coord[2]=1;
+           mat_mult(mat,coord,res);
+           vertex_list[i].first=res[0]/res[2]+piv_x;
+           vertex_list[i].second=piv_y-res[1]/res[2];
+       }
+       poly_draw(old_vertex,255,0,0);
+       poly_draw(vertex_list,255,255,0);
+       return;
+   }
+   int i,len=vertex_list.size();
+
+   double dx=p1.x()-p2.x();
+   double dy=p1.y()-p2.y();
+
+   double a=-dy;
+   double b=dx;
+   double c=p1.x()*dy-p1.y()*dx;
+
+   for(i=0;i<len;i++)
+   {
+       int x1=vertex_list[i].first;
+       int y1=vertex_list[i].second;
+
+       vertex_list[i].first=(int)((double)x1-(double)(2*a*(a*x1+b*y1+c))/(double)((a*a+b*b)));
+       vertex_list[i].second=(int)((double)y1-(double)(2*b*(a*x1+b*y1+c))/(double)((a*a+b*b)));
+   }
+   poly_draw(vertex_list,255,255,255);
+}
 
