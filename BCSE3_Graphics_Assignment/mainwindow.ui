@@ -715,6 +715,84 @@ background-color: rgb(85, 255, 255);</string>
      </rect>
     </property>
    </widget>
+   <widget class="QPushButton" name="setCorner1">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>530</y>
+      <width>121</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>set corner 1</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="setCorner2">
+    <property name="geometry">
+     <rect>
+      <x>160</x>
+      <y>530</y>
+      <width>121</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>set corner 2</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="lineclipping">
+    <property name="geometry">
+     <rect>
+      <x>310</x>
+      <y>530</y>
+      <width>121</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>line clipping</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="drawDDALineByStoringPoints">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>570</y>
+      <width>191</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>DDA Line storing points</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_13">
+    <property name="geometry">
+     <rect>
+      <x>30</x>
+      <y>510</y>
+      <width>91</width>
+      <height>17</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>top left</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_14">
+    <property name="geometry">
+     <rect>
+      <x>170</x>
+      <y>510</y>
+      <width>91</width>
+      <height>17</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>bottom right</string>
+    </property>
+   </widget>
   </widget>
   <widget class="QMenuBar" name="menuBar">
    <property name="geometry">

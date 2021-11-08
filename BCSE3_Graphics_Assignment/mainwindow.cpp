@@ -21,6 +21,9 @@ using namespace std::chrono;
 
 int gridsize=1;
 
+//for taking multiple lines as input
+vector<pair<pair<int, int>, pair<int, int>>> lines;
+
 std::vector<std::pair<int, int> > vertex_list;
 //delay function to introduce animation while drawing
 void MainWindow::delay(int n) {
@@ -50,7 +53,7 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
-void MainWindow::point(int x,int y, int r=0, int g=255, int b=255)
+void MainWindow::point(int x,int y, int r=255, int g=255, int b=0)
 {
     if(gridsize == 1) img.setPixel(x,y,qRgb(r,g,b));
     else {
@@ -119,6 +122,7 @@ void MainWindow::on_resetButton_clicked()
         }
     }
     ui->frame->setPixmap(QPixmap::fromImage(img));
+    lines.clear();
 }
 
 //method to set the grid
@@ -200,6 +204,45 @@ void MainWindow::drawDDALine (int r, int g, int b){
        auto duration = duration_cast<microseconds>(end - start);
        long executionTime = duration.count();
        std::cout << "Execution time for DDA Algorithm :- " << executionTime << "\n";
+}
+
+//for drawing dda line and storing the lines
+void MainWindow::drawDDALineByStoringPoints (int r, int g, int b) {
+    // (x0, y0) -> point1 ; (xn, yn) -> point 2
+    double x0 = p1.x() / gridsize;
+    double xn = p2.x() / gridsize;
+    double y0 = p1.y() / gridsize;
+    double yn = p2.y() / gridsize;
+
+    lines.push_back({{p1.x(), p1.y()}, {p2.x(), p2.y()}});
+
+    //required for evaluating the step count in the algorithm
+    double dx = fabs(xn - x0);
+    double dy = fabs(yn - y0);
+
+    double Dx, Dy;
+
+    if (dx > dy ) { //y coordinate will increase backward or forward by the slope value
+        Dx = 1;
+        Dy = dy / dx;
+    }
+
+    else { // x coordinate will increase backward or forward by the inverse slope value
+        Dx = dx / dy;
+        Dy = 1;
+    }
+    //change the direction of movement accordingly
+    if (x0 > xn) Dx *= -1;
+    if (y0 > yn) Dy *= -1;
+
+    double x = x0*gridsize + gridsize / 2; //adjusting the initial x coordinate according to the grid size
+    double y = y0*gridsize + gridsize / 2; //adjusting the initial y coordinate according to the grid size
+
+    for (int steps =0; steps <= (dx > dy ? dx : dy); steps++) {
+        point (x, y, r, g, b);
+        x += Dx * gridsize;
+        y += Dy * gridsize;
+    }
 }
 
 //implementing the Bresenham's Line drawing algorithm
@@ -1013,5 +1056,223 @@ void MainWindow::on_reflection_clicked()
        vertex_list[i].second=(int)((double)y1-(double)(2*b*(a*x1+b*y1+c))/(double)((a*a+b*b)));
    }
    poly_draw(vertex_list,255,255,255);
+}
+
+
+//line clipping algorithm
+
+int clipper_points[4][2];
+
+void MainWindow::on_setCorner1_clicked()
+{
+    cp1.setX((ui->frame->x/gridsize)*gridsize+gridsize/2);
+    cp1.setY((ui->frame->y/gridsize)*gridsize+gridsize/2);
+}
+
+
+void MainWindow::on_setCorner2_clicked()
+{
+    cp2.setX((ui->frame->x/gridsize)*gridsize+gridsize/2);
+    cp2.setY((ui->frame->y/gridsize)*gridsize+gridsize/2);
+
+    clipper_points[0][0]=cp1.x();
+    clipper_points[0][1]=cp1.y();
+    clipper_points[1][0]=cp1.x();
+    clipper_points[1][1]=cp2.y();
+    clipper_points[2][0]=cp2.x();
+    clipper_points[2][1]=cp2.y();
+    clipper_points[3][0]=cp2.x();
+    clipper_points[3][1]=cp1.y();
+
+    draw_Window();
+}
+void MainWindow::draw_Window()
+{
+    p1.setX(clipper_points[0][0]);
+    p1.setY(clipper_points[0][1]);
+    p2.setX(clipper_points[1][0]);
+    p2.setY(clipper_points[1][1]);
+    drawDDALine(0,255,255);
+
+    p1.setX(clipper_points[1][0]);
+    p1.setY(clipper_points[1][1]);
+    p2.setX(clipper_points[2][0]);
+    p2.setY(clipper_points[2][1]);
+    drawDDALine(0,255,255);
+
+    p1.setX(clipper_points[2][0]);
+    p1.setY(clipper_points[2][1]);
+    p2.setX(clipper_points[3][0]);
+    p2.setY(clipper_points[3][1]);
+    drawDDALine(0,255,255);
+
+    p1.setX(clipper_points[3][0]);
+    p1.setY(clipper_points[3][1]);
+    p2.setX(clipper_points[0][0]);
+    p2.setY(clipper_points[0][1]);
+    drawDDALine(0,255,255);
+}
+// ************************** LINE CLIPPING ********************************
+// Defining region codes
+const int INSIDE = 0; // 0000
+const int LEFT = 1;   // 0001
+const int RIGHT = 2;  // 0010
+const int BOTTOM = 4; // 0100
+const int TOP = 8;    // 1000
+
+
+// Function to compute region code for a point(x, y)
+int MainWindow::computeCode(int xa, int ya)
+{
+    int x_min=cp1.x(),x_max=cp2.x(),y_min=cp1.y(),y_max=cp2.y();
+
+    // initialized as being inside
+        int code = INSIDE;
+        if (xa < x_min)       // to the left of rectangle
+            code |= LEFT;
+        else if (xa > x_max)  // to the right of rectangle
+            code |= RIGHT;
+        if (ya < y_min)       // below the rectangle
+            code |= BOTTOM;
+        else if (ya > y_max)  // above the rectangle
+            code |= TOP;
+
+        return code;
+}
+// Implementing Cohen-Sutherland algorithm
+// Clipping a line from P1 = (x2, y2) to P2 = (x2, y2)
+void MainWindow::cohenSutherlandClip(int x1, int y1,int x2, int y2)
+{
+    int x_min=min(clipper_points[0][0], clipper_points[2][0]);
+    int x_max=max(clipper_points[0][0], clipper_points[2][0]);
+    int y_min=min(clipper_points[0][1], clipper_points[2][1]);
+    int y_max=max(clipper_points[0][1], clipper_points[2][1]);
+        // Compute region codes for P1, P2
+        int code1 = computeCode(x1, y1);
+        int code2 = computeCode(x2, y2);
+
+        // Initialize line as outside the rectangular window
+        bool accept = false;
+
+        while (true)
+        {
+
+            if ((code1 == 0) && (code2 == 0))
+            {
+                // If both endpoints lie within rectangle
+                accept = true;
+                break;
+            }
+            else if (code1 & code2)
+            {
+                // If both endpoints are outside rectangle,
+                // in same region
+                break;
+            }
+            else
+            {
+                // Some segment of line lies within the
+                // rectangle
+                int code_out;
+                int x, y;
+
+                // At least one endpoint is outside the
+                // rectangle, pick it.
+                if (code1 != 0)
+                    code_out = code1;
+                else
+                    code_out = code2;
+
+                // Find intersection point;
+                // using formulas y = y1 + slope * (x - x1),
+                // x = x1 + (1 / slope) * (y - y1)
+                if (code_out & TOP)
+                {
+                    // point is above the clip rectangle
+                    x = x1 + (int)((double)(x2 - x1) *(double)(y_max - y1) /(double)(y2 - y1));
+                    y = y_max;
+                }
+                else if (code_out & BOTTOM)
+                {
+                    // point is below the rectangle
+                    x = x1 + (int)((double)(x2 - x1) * (double)(y_min - y1) / (double)(y2 - y1));
+                    y = y_min;
+                }
+                else if (code_out & RIGHT)
+                {
+                    // point is to the right of rectangle
+                    y = y1 + (int)((double)(y2 - y1) * (double)(x_max - x1) / (double)(x2 - x1));
+                    x = x_max;
+                }
+                else if (code_out & LEFT)
+                {
+                    // point is to the left of rectangle
+                    y = y1 + (int)((double)(y2 - y1) * (double)(x_min - x1) / (double)(x2 - x1));
+                    x = x_min;
+                }
+
+                // Now intersection point x,y is found
+                // We replace point outside rectangle
+                // by intersection point
+                if (code_out == code1)
+                {
+                    x1 = x;
+                    y1 = y;
+                    code1 = computeCode(x1, y1);
+                }
+                else
+                {
+                    x2 = x;
+                    y2 = y;
+                    code2 = computeCode(x2, y2);
+                }
+            }
+        }
+        if (accept)
+        {
+            //If accepted
+            //Just reset and draw the boundary and the line
+            //Reset the screen and draw the grid
+
+            p1.setX(x1);
+            p1.setY(y1);
+
+            p2.setX(x2);
+            p2.setY(y2);
+
+            drawDDALine(225,225,255);
+            draw_Window();
+
+        }
+        else
+        {
+            //If not accepted
+            //Just reset and draw the boundary
+            //Reset the screen and draw the grid
+            draw_Window();
+        }
+}
+
+
+void MainWindow::on_lineclipping_clicked()
+{
+
+    for (pair<pair<int, int>, pair<int, int>> p : lines) {
+        p1.setX(p.first.first);
+        p1.setY(p.first.second);
+        p2.setX(p.second.first);
+        p2.setY(p.second.second);
+
+        drawDDALine(0, 0, 0);
+        cohenSutherlandClip(p1.x(),p1.y(),p2.x(),p2.y());
+        //cohenSutherlandClip(p.first.first, p.first.second, p.second.first, p.second.second);
+    }
+    lines.clear();
+}
+
+
+void MainWindow::on_drawDDALineByStoringPoints_clicked()
+{
+    drawDDALineByStoringPoints(255, 255, 0);
 }
 

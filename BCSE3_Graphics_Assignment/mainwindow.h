@@ -80,9 +80,24 @@ private slots:
 
     void on_reflection_clicked();
 
+    void on_setCorner1_clicked();
+
+    void on_setCorner2_clicked();
+
+    void on_lineclipping_clicked();
+
+    void draw_Window();
+
+    int computeCode (int, int);
+
+    void cohenSutherlandClip (int, int, int, int);
+
+    void drawDDALineByStoringPoints (int, int, int);
+    void on_drawDDALineByStoringPoints_clicked();
+
 private:
     Ui::MainWindow *ui;
-    QPoint p1,p2;
+    QPoint p1,p2, cp1, cp2;
     QTimer *timer;
 
     void point(int x,int y,int r, int g, int b);
