@@ -1253,7 +1253,7 @@ void MainWindow::cohenSutherlandClip(int x1, int y1,int x2, int y2)
         }
 }
 
-
+//line clipping algorithm taking multiple lines into account
 void MainWindow::on_lineclipping_clicked()
 {
 
