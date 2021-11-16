@@ -95,6 +95,14 @@ private slots:
     void drawDDALineByStoringPoints (int, int, int);
     void on_drawDDALineByStoringPoints_clicked();
 
+    void on_polygonclipping_clicked();
+
+    void suthHodgClip();
+    void clip (int, int, int, int);
+
+    int x_intersect (int, int, int, int, int, int, int, int);
+
+    int y_intersect (int, int, int, int, int, int, int, int);
 private:
     Ui::MainWindow *ui;
     QPoint p1,p2, cp1, cp2;
